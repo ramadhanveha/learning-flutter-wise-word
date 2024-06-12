@@ -130,12 +130,12 @@ class GeneratorPage extends StatelessWidget {
                     ..hideCurrentSnackBar()
                     ..showSnackBar(
                       SnackBar(
-                        content: Text("Favorite toggled ${appState.current}"),
+                        content: Text("it's ${appState.current}"),
                       ),
                     );
                 },
                 icon: Icon(icon),
-                label: Text('Like'),
+                label: Text('Favorites'),
               ),
               SizedBox(width: 10),
               ElevatedButton(
