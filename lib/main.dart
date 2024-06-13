@@ -50,8 +50,18 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeNext(WordPair pair) {
+    next.remove(pair);
+    notifyListeners();
+  }
+
   void removeAllFavorites() {
     favorites.clear();
+    notifyListeners();
+  }
+
+  void removeAllNext() {
+    next.clear();
     notifyListeners();
   }
 }
@@ -71,6 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
       case 1:
         page = FavouritePage();
+      case 2:
+        page = HistoryPage();
       default:
         page = Placeholder();
     }
@@ -91,6 +103,10 @@ class _MyHomePageState extends State<MyHomePage> {
               selectedIcon: Icon(Icons.favorite),
               icon: Icon(Icons.favorite_border_outlined),
               label: "Favorite"),
+          NavigationDestination(
+              selectedIcon: Icon(Icons.history),
+              icon: Icon(Icons.history_outlined),
+              label: "History"),
         ],
       ),
       body: Container(
@@ -239,7 +255,22 @@ class FavouritePage extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: 20), // Spasi antara dua kolom
+        ],
+      ),
+    );
+  }
+}
+
+class HistoryPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        children: [
+          // Spasi antara dua kolom
           Expanded(
             child: Column(
               children: [
@@ -256,10 +287,37 @@ class FavouritePage extends StatelessWidget {
                           ListTile(
                             leading: Icon(Icons.history),
                             title: Text(pair.asLowerCase),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                appState.removeNext(pair);
+                                ScaffoldMessenger.of(context)
+                                  ..hideCurrentSnackBar()
+                                  ..showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text("Remove ${appState.current}"),
+                                    ),
+                                  );
+                              },
+                            ),
                           ),
                       ],
                     ),
                   ),
+                ElevatedButton(
+                  onPressed: () {
+                    appState.removeAllNext();
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                          content: Text("Remove all success"),
+                        ),
+                      );
+                  },
+                  child: Text('Remove All History'),
+                ),
               ],
             ),
           ),
